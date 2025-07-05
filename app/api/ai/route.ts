@@ -1,17 +1,18 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
+import Groq from 'groq-sdk'
 
-// Initialize Google Gemini AI client
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || '')
-const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
+// Initialize Groq AI client
+const groq = new Groq({
+  apiKey: process.env.GROQ_API_KEY || '',
+})
 
 export async function POST(request: NextRequest) {
   try {
     const { type, data } = await request.json()
 
-    if (!process.env.GOOGLE_AI_API_KEY) {
+    if (!process.env.GROQ_API_KEY) {
       return NextResponse.json(
-        { error: 'API Key tidak ditemukan. Pastikan GOOGLE_AI_API_KEY sudah diset di environment variables.' },
+        { error: 'API Key tidak ditemukan. Pastikan GROQ_API_KEY sudah diset di environment variables.' },
         { status: 500 }
       )
     }
@@ -90,10 +91,19 @@ export async function POST(request: NextRequest) {
         )
     }
 
-    // Panggil Gemini AI API
-    const prompt = `${systemPrompt}\n\nUser: ${userPrompt}`
-    const result = await model.generateContent(prompt)
-    const response = result.response.text() || ''
+    // Panggil Groq AI API dengan Llama 3.1 70B
+    const completion = await groq.chat.completions.create({
+      model: 'llama-3.1-70b-versatile',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: userPrompt }
+      ],
+      max_tokens: type === 'generate_outline' ? 2000 : 4000,
+      temperature: 0.7,
+      top_p: 0.9,
+    })
+
+    const response = completion.choices[0]?.message?.content || ''
 
     // Untuk generate_outline, parse JSON response
     if (type === 'generate_outline') {
@@ -127,10 +137,10 @@ export async function POST(request: NextRequest) {
         )
       }
       
-      if (error.message.includes('quota') || error.message.includes('insufficient')) {
+      if (error.message.includes('quota') || error.message.includes('insufficient') || error.message.includes('limit')) {
         return NextResponse.json(
-          { error: 'Quota API sudah habis. Silakan cek quota Google AI Anda.' },
-          { status: 402 }
+          { error: 'Rate limit atau quota terlampaui. Silakan tunggu atau upgrade plan Groq Anda.' },
+          { status: 429 }
         )
       }
     }
@@ -145,8 +155,9 @@ export async function POST(request: NextRequest) {
 // Handle GET request untuk health check
 export async function GET() {
   return NextResponse.json({ 
-    message: 'Gemini AI API is running',
-    hasApiKey: !!process.env.GOOGLE_AI_API_KEY,
-    provider: 'Google Gemini AI'
+    message: 'Groq AI API is running',
+    hasApiKey: !!process.env.GROQ_API_KEY,
+    provider: 'Groq AI',
+    model: 'llama-3.1-70b-versatile'
   })
 }

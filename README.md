@@ -25,7 +25,7 @@
 - **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
-- **AI Provider:** Google Gemini AI
+- **AI Provider:** Groq AI (Llama 3.1 70B Versatile)
 - **Rich Text Editor:** TipTap
 - **Drag & Drop:** @dnd-kit
 - **Export:** docx, file-saver
@@ -36,7 +36,7 @@
 
 - Node.js 18.17.0 atau lebih baru
 - npm, yarn, atau pnpm
-- Google AI (Gemini) API Key
+- Groq AI API Key
 
 ## 🚀 Quick Start
 
@@ -66,7 +66,7 @@ cp .env.local.example .env.local
 Edit file \`.env.local\` dan isi dengan API Key Anda:
 
 \`\`\`env
-GOOGLE_AI_API_KEY=your_google_ai_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 \`\`\`
 
 ### 4. Run Development Server
@@ -79,28 +79,82 @@ yarn dev
 pnpm dev
 \`\`\`
 
+### 5. Test Groq AI Connection (Opsional)
+
+\`\`\`bash
+npm run test:groq
+\`\`\`
+
+Script ini akan:
+- ✅ Memverifikasi API key setup
+- ✅ Test koneksi ke Groq AI  
+- ✅ Mencoba generate sample response
+- ✅ Menampilkan troubleshooting jika ada error
+
 Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
-## 🔑 Cara Mendapatkan Google AI (Gemini) API Key
+## 🔑 Cara Mendapatkan Groq AI API Key
 
-1. Buka [Google AI Studio](https://aistudio.google.com/app/apikey)
-2. Login dengan akun Google Anda
-3. Klik "Create API Key"
-4. Pilih project atau buat project baru
-5. Copy API key dan paste ke \`.env.local\`
+1. Buka [Groq Console](https://console.groq.com)
+2. Sign up atau login dengan akun Anda
+3. Pergi ke **API Keys** section
+4. Klik "Create API Key"
+5. Beri nama API key dan klik "Submit"
+6. Copy API key dan paste ke \`.env.local\`
 
 **⚠️ Penting:**
 - Jangan commit API key ke repository
-- API key memiliki rate limit (gratis: 60 requests/menit)
-- Gemini Pro tersedia gratis dengan batasan tertentu
-- Untuk production, pertimbangkan upgrade ke plan berbayar
+- API key memiliki rate limit (gratis: 30 requests/menit)
+- Groq menyediakan free tier yang generous
+- Untuk production scale, upgrade ke plan berbayar
 
-**📊 Keunggulan Gemini AI:**
-- ✅ **Free tier** yang generous
-- ✅ **Multimodal** support (text, image, video)
-- ✅ **32K context window** 
-- ✅ **Fast response time**
-- ✅ **Bahasa Indonesia** support yang baik
+**� Keunggulan Groq AI:**
+- ⚡ **Lightning Fast** - Inference tercepat di dunia (500+ tokens/detik)
+- 🧠 **Llama 3.1 70B** - Model terbaru dari Meta yang sangat powerful
+- 💰 **Cost Effective** - Lebih murah dibanding OpenAI
+- 🆓 **Generous Free Tier** - 30 requests/menit gratis
+- 🎯 **High Quality** - Output berkualitas tinggi setara GPT-4
+- 📖 **Large Context** - Support hingga 128K tokens
+
+**🔧 Model Options di Groq:**
+
+| Model | Use Case | Speed | Quality | Context |
+|-------|----------|-------|---------|---------|
+| `llama-3.1-70b-versatile` | **Production/Quality** | Fast | Excellent | 128K |
+| `llama-3.1-8b-instant` | **Development/Speed** | Ultra Fast | Good | 128K |
+| `mixtral-8x7b-32768` | **Alternative/Multilingual** | Fast | Very Good | 32K |
+| `gemma2-9b-it` | **Lightweight** | Very Fast | Good | 8K |
+
+**💡 Rekomendasi:**
+- **Untuk Skripsi AI**: Gunakan `llama-3.1-70b-versatile` (default)
+- **Untuk Testing**: Gunakan `llama-3.1-8b-instant` 
+- **Untuk Bahasa Lain**: Gunakan `mixtral-8x7b-32768`
+
+**⚡ Perbandingan Performance:**
+
+| Provider | Speed (tokens/sec) | Free Tier | Cost (per 1M tokens) | Context |
+|----------|-------------------|-----------|---------------------|---------|
+| **Groq (Llama 3.1 70B)** | **500+** | **30 req/min** | **$0.59** | **128K** |
+| OpenAI (GPT-4) | 50-100 | None | $30.00 | 128K |
+| Anthropic (Claude 3.5) | 80-150 | None | $15.00 | 200K |
+| Google (Gemini Pro) | 100-200 | 60 req/min | $1.25 | 32K |
+
+**🏆 Mengapa Pilih Groq untuk Skripsi AI:**
+- ✅ **10x lebih cepat** dari provider lain
+- ✅ **Free tier paling generous** untuk development  
+- ✅ **Cost effective** untuk production
+- ✅ **Llama 3.1** model open-source terbaik
+- ✅ **Perfect untuk bahasa Indonesia**
+
+**🔥 Groq vs Kompetitor:**
+
+| Aspek | Groq (Llama 3.1) | OpenAI (GPT-4) | Google (Gemini) | Anthropic (Claude) |
+|-------|------------------|----------------|-----------------|-------------------|
+| **Speed** | 🚀 500+ tok/sec | 🐌 50-100 tok/sec | 🏃 100-200 tok/sec | 🏃 80-150 tok/sec |
+| **Free Tier** | ✅ 30 req/min | ❌ None | ⚠️ 60 req/min | ❌ None |
+| **Cost** | 💰 $0.59/1M | 💸 $30/1M | 💵 $1.25/1M | 💸 $15/1M |
+| **Setup** | ⚡ 2 menit | 🔧 5+ menit | 🔧 10+ menit | 🔧 10+ menit |
+| **Indonesian** | 🇮🇩 Excellent | 🌍 Good | 🌍 Good | 🌍 Average |
 
 ## 📁 Struktur Project
 
@@ -170,7 +224,7 @@ Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
 \`\`\`env
 # Required
-GOOGLE_AI_API_KEY=your_google_ai_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
 
 # Optional
 NEXT_PUBLIC_APP_NAME=Asisten Skripsi AI
@@ -180,10 +234,11 @@ NEXT_PUBLIC_APP_VERSION=1.0.0
 ### Scripts
 
 \`\`\`bash
-npm run dev      # Development server
-npm run build    # Production build
-npm run start    # Production server
-npm run lint     # ESLint check
+npm run dev       # Development server
+npm run build     # Production build
+npm run start     # Production server
+npm run lint      # ESLint check
+npm run test:groq # Test Groq AI connection
 \`\`\`
 
 ### Customization
@@ -192,8 +247,9 @@ npm run lint     # ESLint check
 Edit \`app/api/ai/route.ts\`:
 
 \`\`\`typescript
-const model = genAI.getGenerativeModel({ 
-  model: 'gemini-pro' // Atau 'gemini-pro-vision' untuk vision support
+const completion = await groq.chat.completions.create({
+  model: 'llama-3.1-70b-versatile', // Atau 'llama-3.1-8b-instant' untuk speed
+  // Pilihan model lain: 'mixtral-8x7b-32768', 'gemma2-9b-it'
 })
 \`\`\`
 
@@ -234,7 +290,7 @@ vercel
 Tambahkan di Vercel Dashboard > Settings > Environment Variables:
 
 \`\`\`
-GOOGLE_AI_API_KEY = your_google_ai_api_key_here
+GROQ_API_KEY = your_groq_api_key_here
 \`\`\`
 
 ### 4. Domain Custom (Opsional)
@@ -286,23 +342,30 @@ GOOGLE_AI_API_KEY = your_google_ai_api_key_here
 
 **Solusi:**
 1. Pastikan file \`.env.local\` ada
-2. Pastikan \`GOOGLE_AI_API_KEY\` sudah diset
+2. Pastikan \`GROQ_API_KEY\` sudah diset
 3. Restart development server
-4. Cek apakah API key valid di Google AI Studio
+4. Cek apakah API key valid di Groq Console
 
 ### Error: "Rate limit exceeded"
 
 **Solusi:**
-1. Tunggu beberapa menit sebelum mencoba lagi (Gemini Pro: 60 requests/menit)
-2. Upgrade ke Gemini Pro plan berbayar jika perlu
-3. Gunakan delay antar request
+1. Tunggu beberapa menit sebelum mencoba lagi (Groq Free: 30 requests/menit)
+2. Upgrade ke Groq Pay-as-you-go plan jika perlu (14,400 requests/hari)
+3. Gunakan delay antar request atau implement queue system
 
-### Error: "Blocked by safety filters"
+### Error: "Model overloaded" atau "Service unavailable"
 
 **Solusi:**
-1. Periksa konten yang dikirim tidak mengandung hal sensitif
-2. Pastikan topik skripsi tidak melanggar content policy
-3. Coba rephrase prompt dengan bahasa yang lebih formal
+1. Tunggu beberapa detik dan coba lagi (Groq kadang overloaded karena popularitas)
+2. Implement retry logic dengan exponential backoff
+3. Coba model alternatif seperti 'llama-3.1-8b-instant' yang lebih cepat
+
+### Error: "Invalid model specified"
+
+**Solusi:**
+1. Pastikan menggunakan model yang tersedia: 'llama-3.1-70b-versatile', 'llama-3.1-8b-instant', 'mixtral-8x7b-32768'
+2. Cek dokumentasi Groq untuk model terbaru
+3. Restart aplikasi setelah mengubah model
 
 ### Error: "Module not found"
 
@@ -354,7 +417,7 @@ GOOGLE_AI_API_KEY = your_google_ai_api_key_here
   "file-saver": "^2.0.5",
   "lucide-react": "^0.294.0",
   "next": "14.0.4",
-  "@google/generative-ai": "^0.2.1",
+  "groq-sdk": "^0.7.0",
   "react": "^18.2.0",
   "react-dom": "^18.2.0"
 }
@@ -369,6 +432,7 @@ GOOGLE_AI_API_KEY = your_google_ai_api_key_here
   "@types/react": "^18.2.45",
   "@types/react-dom": "^18.2.18",
   "autoprefixer": "^10.4.16",
+  "dotenv": "^16.3.1",
   "eslint": "^8.56.0",
   "eslint-config-next": "14.0.4",
   "postcss": "^8.4.32",
@@ -392,7 +456,8 @@ Distributed under the MIT License. See \`LICENSE\` for more information.
 ## 🙏 Acknowledgments
 
 - [Next.js](https://nextjs.org/) - React framework
-- [Google AI (Gemini)](https://ai.google.dev/) - AI API
+- [Groq](https://groq.com/) - Lightning-fast AI inference
+- [Meta Llama 3.1](https://llama.meta.com/) - Advanced language model
 - [Tailwind CSS](https://tailwindcss.com/) - CSS framework
 - [TipTap](https://tiptap.dev/) - Rich text editor
 - [Lucide](https://lucide.dev/) - Icon library
