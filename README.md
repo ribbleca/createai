@@ -25,7 +25,7 @@
 - **Framework:** Next.js 14 (App Router)
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
-- **AI Provider:** OpenAI GPT-3.5 Turbo
+- **AI Provider:** Google Gemini AI
 - **Rich Text Editor:** TipTap
 - **Drag & Drop:** @dnd-kit
 - **Export:** docx, file-saver
@@ -36,7 +36,7 @@
 
 - Node.js 18.17.0 atau lebih baru
 - npm, yarn, atau pnpm
-- OpenAI API Key
+- Google AI (Gemini) API Key
 
 ## 🚀 Quick Start
 
@@ -66,7 +66,7 @@ cp .env.local.example .env.local
 Edit file \`.env.local\` dan isi dengan API Key Anda:
 
 \`\`\`env
-OPENAI_API_KEY=your_openai_api_key_here
+GOOGLE_AI_API_KEY=your_google_ai_api_key_here
 \`\`\`
 
 ### 4. Run Development Server
@@ -81,18 +81,26 @@ pnpm dev
 
 Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
-## 🔑 Cara Mendapatkan OpenAI API Key
+## 🔑 Cara Mendapatkan Google AI (Gemini) API Key
 
-1. Buka [OpenAI Platform](https://platform.openai.com)
-2. Buat akun atau login
-3. Pergi ke [API Keys](https://platform.openai.com/api-keys)
-4. Klik "Create new secret key"
+1. Buka [Google AI Studio](https://aistudio.google.com/app/apikey)
+2. Login dengan akun Google Anda
+3. Klik "Create API Key"
+4. Pilih project atau buat project baru
 5. Copy API key dan paste ke \`.env.local\`
 
 **⚠️ Penting:**
 - Jangan commit API key ke repository
-- API key memiliki rate limit dan billing
-- Pastikan akun OpenAI memiliki credit/billing setup
+- API key memiliki rate limit (gratis: 60 requests/menit)
+- Gemini Pro tersedia gratis dengan batasan tertentu
+- Untuk production, pertimbangkan upgrade ke plan berbayar
+
+**📊 Keunggulan Gemini AI:**
+- ✅ **Free tier** yang generous
+- ✅ **Multimodal** support (text, image, video)
+- ✅ **32K context window** 
+- ✅ **Fast response time**
+- ✅ **Bahasa Indonesia** support yang baik
 
 ## 📁 Struktur Project
 
@@ -162,7 +170,7 @@ Buka [http://localhost:3000](http://localhost:3000) di browser Anda.
 
 \`\`\`env
 # Required
-OPENAI_API_KEY=your_openai_api_key_here
+GOOGLE_AI_API_KEY=your_google_ai_api_key_here
 
 # Optional
 NEXT_PUBLIC_APP_NAME=Asisten Skripsi AI
@@ -184,9 +192,8 @@ npm run lint     # ESLint check
 Edit \`app/api/ai/route.ts\`:
 
 \`\`\`typescript
-const completion = await openai.chat.completions.create({
-  model: 'gpt-4', // Ganti ke gpt-4 jika tersedia
-  // ...
+const model = genAI.getGenerativeModel({ 
+  model: 'gemini-pro' // Atau 'gemini-pro-vision' untuk vision support
 })
 \`\`\`
 
@@ -227,7 +234,7 @@ vercel
 Tambahkan di Vercel Dashboard > Settings > Environment Variables:
 
 \`\`\`
-OPENAI_API_KEY = your_openai_api_key_here
+GOOGLE_AI_API_KEY = your_google_ai_api_key_here
 \`\`\`
 
 ### 4. Domain Custom (Opsional)
@@ -279,16 +286,23 @@ OPENAI_API_KEY = your_openai_api_key_here
 
 **Solusi:**
 1. Pastikan file \`.env.local\` ada
-2. Pastikan \`OPENAI_API_KEY\` sudah diset
+2. Pastikan \`GOOGLE_AI_API_KEY\` sudah diset
 3. Restart development server
-4. Cek apakah API key valid di OpenAI Dashboard
+4. Cek apakah API key valid di Google AI Studio
 
 ### Error: "Rate limit exceeded"
 
 **Solusi:**
-1. Tunggu beberapa menit sebelum mencoba lagi
-2. Upgrade plan OpenAI jika perlu
+1. Tunggu beberapa menit sebelum mencoba lagi (Gemini Pro: 60 requests/menit)
+2. Upgrade ke Gemini Pro plan berbayar jika perlu
 3. Gunakan delay antar request
+
+### Error: "Blocked by safety filters"
+
+**Solusi:**
+1. Periksa konten yang dikirim tidak mengandung hal sensitif
+2. Pastikan topik skripsi tidak melanggar content policy
+3. Coba rephrase prompt dengan bahasa yang lebih formal
 
 ### Error: "Module not found"
 
@@ -340,7 +354,7 @@ OPENAI_API_KEY = your_openai_api_key_here
   "file-saver": "^2.0.5",
   "lucide-react": "^0.294.0",
   "next": "14.0.4",
-  "openai": "^4.20.1",
+  "@google/generative-ai": "^0.2.1",
   "react": "^18.2.0",
   "react-dom": "^18.2.0"
 }
@@ -378,7 +392,7 @@ Distributed under the MIT License. See \`LICENSE\` for more information.
 ## 🙏 Acknowledgments
 
 - [Next.js](https://nextjs.org/) - React framework
-- [OpenAI](https://openai.com/) - AI API
+- [Google AI (Gemini)](https://ai.google.dev/) - AI API
 - [Tailwind CSS](https://tailwindcss.com/) - CSS framework
 - [TipTap](https://tiptap.dev/) - Rich text editor
 - [Lucide](https://lucide.dev/) - Icon library

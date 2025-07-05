@@ -1,18 +1,17 @@
 import { NextRequest, NextResponse } from 'next/server'
-import OpenAI from 'openai'
+import { GoogleGenerativeAI } from '@google/generative-ai'
 
-// Initialize OpenAI client
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-})
+// Initialize Google Gemini AI client
+const genAI = new GoogleGenerativeAI(process.env.GOOGLE_AI_API_KEY || '')
+const model = genAI.getGenerativeModel({ model: 'gemini-pro' })
 
 export async function POST(request: NextRequest) {
   try {
     const { type, data } = await request.json()
 
-    if (!process.env.OPENAI_API_KEY) {
+    if (!process.env.GOOGLE_AI_API_KEY) {
       return NextResponse.json(
-        { error: 'API Key tidak ditemukan. Pastikan OPENAI_API_KEY sudah diset di environment variables.' },
+        { error: 'API Key tidak ditemukan. Pastikan GOOGLE_AI_API_KEY sudah diset di environment variables.' },
         { status: 500 }
       )
     }
@@ -91,18 +90,10 @@ export async function POST(request: NextRequest) {
         )
     }
 
-    // Panggil OpenAI API
-    const completion = await openai.chat.completions.create({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        { role: 'system', content: systemPrompt },
-        { role: 'user', content: userPrompt }
-      ],
-      max_tokens: type === 'generate_outline' ? 1000 : 2000,
-      temperature: 0.7,
-    })
-
-    const response = completion.choices[0]?.message?.content || ''
+    // Panggil Gemini AI API
+    const prompt = `${systemPrompt}\n\nUser: ${userPrompt}`
+    const result = await model.generateContent(prompt)
+    const response = result.response.text() || ''
 
     // Untuk generate_outline, parse JSON response
     if (type === 'generate_outline') {
@@ -136,9 +127,9 @@ export async function POST(request: NextRequest) {
         )
       }
       
-      if (error.message.includes('insufficient_quota')) {
+      if (error.message.includes('quota') || error.message.includes('insufficient')) {
         return NextResponse.json(
-          { error: 'Quota API sudah habis. Silakan upgrade plan OpenAI Anda.' },
+          { error: 'Quota API sudah habis. Silakan cek quota Google AI Anda.' },
           { status: 402 }
         )
       }
@@ -154,7 +145,8 @@ export async function POST(request: NextRequest) {
 // Handle GET request untuk health check
 export async function GET() {
   return NextResponse.json({ 
-    message: 'AI API is running',
-    hasApiKey: !!process.env.OPENAI_API_KEY 
+    message: 'Gemini AI API is running',
+    hasApiKey: !!process.env.GOOGLE_AI_API_KEY,
+    provider: 'Google Gemini AI'
   })
 }
